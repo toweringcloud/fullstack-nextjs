@@ -9,9 +9,7 @@ export default function LogIn() {
 	const [state, action] = useFormState(handleForm, null);
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
-			<div className="flex flex-col gap-2 *:font-medium">
-				<h1 className="text-2xl">💥</h1>
-			</div>
+			<span className="text-9xl text-center">✨</span>
 			<form action={action} className="flex flex-col gap-3">
 				<FormInput
 					name="email"
