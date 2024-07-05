@@ -48,5 +48,5 @@ export async function logIn(prevState: any, formData: FormData) {
 	}
 	console.log(result);
 	revalidatePath("/login");
-	redirect("/login");
+	redirect("/login?result=ok");
 }
