@@ -1,6 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
 import {
 	EMAIL_NOT_ALLOWED_ERROR,
 	PASSWORD_MIN_LENGTH,
@@ -42,8 +45,8 @@ export async function logIn(prevState: any, formData: FormData) {
 	if (!result.success) {
 		console.log(result.error.flatten());
 		return result.error.flatten();
-	} else {
-		console.log(result.data);
-		return result;
 	}
+	console.log(result);
+	revalidatePath("/login");
+	redirect("/login");
 }

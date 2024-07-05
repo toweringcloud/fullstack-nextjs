@@ -35,10 +35,12 @@ export default function LogIn() {
 					errors={state?.fieldErrors.password}
 				/>
 				<FormButton text="Log in" />
-				<div className="bg-[#32BD6F] text-black font-semibold rounded-xl h-10 p-2 flex flex-row gap-3">
-					<CheckBadgeIcon className="size-5" />
-					Welcome back!
-				</div>
+				{state?.fieldErrors.length == 0 ? (
+					<div className="bg-[#32BD6F] text-black font-semibold rounded-xl h-10 p-2 flex flex-row gap-3">
+						<CheckBadgeIcon className="size-6" />
+						Welcome back!
+					</div>
+				) : null}
 			</form>
 		</div>
 	);
