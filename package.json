@@ -7,7 +7,9 @@
 	"keywords": [
 		"react",
 		"nextjs",
-		"server action"
+		"app router",
+		"server action",
+		"prisma orm"
 	],
 	"scripts": {
 		"dev": "next dev",
@@ -16,6 +18,7 @@
 	},
 	"dependencies": {
 		"@heroicons/react": "^2.1.4",
+		"@prisma/client": "^5.6.0",
 		"next": "^14.2.4",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
