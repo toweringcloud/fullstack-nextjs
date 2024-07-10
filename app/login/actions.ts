@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 
 import {
 	EMAIL_NOT_ALLOWED_ERROR,
@@ -13,6 +13,20 @@ import {
 	USERNAME_MIN_LENGTH,
 	USERNAME_MIN_LENGTH_ERROR,
 } from "@/libs/constants";
+import { db } from "@/libs/db";
+import getSession from "@/libs/session";
+
+const checkEmailExists = async (email: string) => {
+	const user = await db.user.findUnique({
+		where: {
+			email,
+		},
+		select: {
+			id: true,
+		},
+	});
+	return Boolean(user);
+};
 
 const formSchema = z.object({
 	email: z
@@ -35,18 +49,40 @@ const formSchema = z.object({
 });
 
 export async function logIn(prevState: any, formData: FormData) {
-	console.log(prevState);
 	const data = {
 		email: formData.get("email"),
 		username: formData.get("username"),
 		password: formData.get("password"),
 	};
-	const result = formSchema.safeParse(data);
+	const result = await formSchema.spa(data);
 	if (!result.success) {
-		console.log(result.error.flatten());
 		return result.error.flatten();
+	} else {
+		const user = await db.user.findUnique({
+			where: {
+				email: result.data.email,
+			},
+			select: {
+				id: true,
+				password: true,
+			},
+		});
+		const ok = await bcrypt.compare(
+			result.data.password,
+			user!.password ?? ":::__:::"
+		);
+		if (ok) {
+			const session = await getSession();
+			session.id = user!.id;
+			await session.save();
+			redirect("/profile");
+		} else {
+			return {
+				fieldErrors: {
+					password: ["Wrong password."],
+					email: [],
+				},
+			};
+		}
 	}
-	console.log(result);
-	revalidatePath("/login");
-	redirect("/login?result=ok");
 }

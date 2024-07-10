@@ -4,8 +4,8 @@ import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
-import FormButton from "@/components/form-btn";
-import FormInput from "@/components/form-input";
+import FormButton from "@/components/button";
+import FormInput from "@/components/input";
 import { logIn } from "./actions";
 
 export default function LogIn() {
