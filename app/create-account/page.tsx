@@ -9,12 +9,10 @@ import { createAccount } from "./actions";
 
 export default function CreateAccount() {
 	const [state, dispatch] = useFormState(createAccount, null);
+
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
-			<div className="flex flex-col gap-2 *:font-medium">
-				<h1 className="text-2xl">Welcom to account registration!</h1>
-				<h2 className="text-xl">Fill in the form below to join!</h2>
-			</div>
+			<div className="text-3xl text-center pt-[30vh]">✨ Sign-up ✨</div>
 			<form action={dispatch} className="flex flex-col gap-3">
 				<Input
 					name="username"
@@ -22,8 +20,8 @@ export default function CreateAccount() {
 					placeholder="Username"
 					required
 					errors={state?.fieldErrors.username}
-					minLength={3}
-					maxLength={10}
+					minLength={5}
+					maxLength={15}
 				/>
 				<Input
 					name="email"
@@ -36,7 +34,7 @@ export default function CreateAccount() {
 					name="password"
 					type="password"
 					placeholder="Password"
-					minLength={4}
+					minLength={5}
 					required
 					errors={state?.fieldErrors.password}
 				/>
@@ -45,7 +43,7 @@ export default function CreateAccount() {
 					type="password"
 					placeholder="Confirm Password"
 					required
-					minLength={4}
+					minLength={5}
 					errors={state?.fieldErrors.confirm_password}
 				/>
 				<Button text="Create account" />

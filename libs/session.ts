@@ -7,7 +7,7 @@ interface SessionContent {
 
 export default function getSession() {
 	return getIronSession<SessionContent>(cookies(), {
-		cookieName: "my-cookie",
+		cookieName: "delicious-cookie",
 		password: process.env.COOKIE_PASSWORD!,
 	});
 }

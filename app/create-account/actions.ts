@@ -5,9 +5,12 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 
 import {
+	EMAIL_NOT_ALLOWED_ERROR,
 	PASSWORD_MIN_LENGTH,
 	PASSWORD_REGEX,
 	PASSWORD_REGEX_ERROR,
+	USERNAME_MIN_LENGTH,
+	USERNAME_MIN_LENGTH_ERROR,
 } from "@/libs/constants";
 import { db } from "@/libs/db";
 import getSession from "@/libs/session";
@@ -29,13 +32,21 @@ const formSchema = z
 				invalid_type_error: "Username must be a string!",
 				required_error: "Where is my username???",
 			})
-			.toLowerCase()
 			.trim()
-			// .transform((username) => `🔥 ${username} 🔥`)
+			.refine(
+				(i) => i.length >= USERNAME_MIN_LENGTH,
+				USERNAME_MIN_LENGTH_ERROR
+			)
 			.refine(checkUsername, "No potatoes allowed!"),
-		email: z.string().email().toLowerCase(),
-		password: z.string().min(PASSWORD_MIN_LENGTH),
-		//.regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+		email: z
+			.string()
+			.email()
+			.toLowerCase()
+			.refine((i) => i.includes("@gmail.com"), EMAIL_NOT_ALLOWED_ERROR),
+		password: z
+			.string()
+			.min(PASSWORD_MIN_LENGTH)
+			.regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
 		confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
 	})
 	.superRefine(async ({ username }, ctx) => {
@@ -82,6 +93,7 @@ const formSchema = z
 	});
 
 export async function createAccount(prevState: any, formData: FormData) {
+	// validate user input
 	const data = {
 		username: formData.get("username"),
 		email: formData.get("email"),
@@ -92,21 +104,22 @@ export async function createAccount(prevState: any, formData: FormData) {
 	if (!result.success) {
 		console.log(result.error.flatten());
 		return result.error.flatten();
-	} else {
-		const hashedPassword = await bcrypt.hash(result.data.password, 12);
-		const user = await db.user.create({
-			data: {
-				username: result.data.username,
-				email: result.data.email,
-				password: hashedPassword,
-			},
-			select: {
-				id: true,
-			},
-		});
-		const session = await getSession();
-		session.id = user.id;
-		await session.save();
-		redirect("/profile");
 	}
+
+	// register user info
+	const hashedPassword = await bcrypt.hash(result.data.password, 12);
+	const user = await db.user.create({
+		data: {
+			username: result.data.username,
+			email: result.data.email,
+			password: hashedPassword,
+		},
+		select: {
+			id: true,
+		},
+	});
+	const session = await getSession();
+	session.id = user.id;
+	await session.save();
+	redirect("/profile");
 }

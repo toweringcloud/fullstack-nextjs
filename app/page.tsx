@@ -1,22 +1,31 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default function Home() {
+import { db } from "@/libs/db";
+import getSession from "@/libs/session";
+
+async function getUser() {
+	const session = await getSession();
+	if (session.id) {
+		const user = await db.user.findUnique({
+			where: {
+				id: session.id,
+			},
+		});
+		if (user) {
+			return user;
+		}
+	}
+	redirect("/login");
+}
+
+export default async function Home() {
+	const user = await getUser();
+
 	return (
-		<div className="flex flex-col items-center justify-between min-h-screen p-6">
-			<div className="my-auto flex flex-col items-center gap-2 *:font-medium">
-				<span className="text-9xl">✨</span>
-				<h1 className="text-2xl">Authentication Challenge</h1>
-				<h2 className="text-4xl ">
-					{" "}
-					<Link href="/login" className="hover:underline">
-						Log in
-					</Link>
-				</h2>
-				<hr />
-				<Link href="/create-account" className="hover:underline">
-					or Join
-				</Link>
-			</div>
+		<div className="flex flex-col gap-10 py-8 px-6">
+			<div className="text-3xl text-center pt-10">✨ Home ✨</div>
+			<h2>Tweets</h2>
 		</div>
 	);
 }

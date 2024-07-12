@@ -16,8 +16,6 @@ model User {
   username    String    @unique
   password    String?
   email       String?   @unique
-  phone       String?   @unique
-  github_id   String?   @unique
   bio         String?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
