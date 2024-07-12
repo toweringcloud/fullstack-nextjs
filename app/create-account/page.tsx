@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormState } from "react-dom";
 
 import Button from "@/components/button";
@@ -46,8 +47,12 @@ export default function CreateAccount() {
 					minLength={5}
 					errors={state?.fieldErrors.confirm_password}
 				/>
-				<Button text="Create account" />
+				<Button mode="primary" text="Create account" />
 			</form>
+			<hr className="-mt-5 -mb-5" />
+			<Link href="/login">
+				<Button mode="secondary" text="Verify account" />
+			</Link>
 			{/* <SocialLogin /> */}
 		</div>
 	);

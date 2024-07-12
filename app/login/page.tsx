@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
@@ -31,7 +32,7 @@ export default function LogIn() {
 					required
 					errors={state?.fieldErrors.password}
 				/>
-				<Button text="Verify account" />
+				<Button mode="primary" text="Verify account" />
 				{params && state?.fieldErrors.length == 0 ? (
 					<div className="bg-[#32BD6F] text-black font-semibold rounded-xl h-10 p-2 flex flex-row gap-3">
 						<CheckBadgeIcon className="size-6" />
@@ -39,6 +40,10 @@ export default function LogIn() {
 					</div>
 				) : null}
 			</form>
+			<hr className="-mt-5 -mb-5" />
+			<Link href="/create-account">
+				<Button mode="secondary" text="Create account" />
+			</Link>
 		</div>
 	);
 }
