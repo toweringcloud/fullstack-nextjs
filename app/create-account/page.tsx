@@ -6,7 +6,6 @@ import { useFormState } from "react-dom";
 import Button from "@/components/button";
 import ButtonSecondary from "@/components/button-secondary";
 import Input from "@/components/input";
-// import SocialLogin from "@/components/social-login";
 import { createAccount } from "./actions";
 
 export default function CreateAccount() {
@@ -54,7 +53,6 @@ export default function CreateAccount() {
 			<Link href="/login">
 				<ButtonSecondary mode="secondary" text="Sign-in" />
 			</Link>
-			{/* <SocialLogin /> */}
 		</div>
 	);
 }

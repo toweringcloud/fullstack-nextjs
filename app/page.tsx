@@ -21,11 +21,15 @@ async function getUser() {
 	redirect("/login");
 }
 async function getTweets() {
-	const session = await getSession();
 	const tweets = await db.tweet.findMany({
-		where: {
-			userId: session.id,
+		include: {
+			user: {
+				select: {
+					username: true,
+				},
+			},
 		},
+		// take: 3,
 		orderBy: {
 			created_at: "desc",
 		},
@@ -36,10 +40,10 @@ async function getTweets() {
 
 export default async function Home() {
 	const user = await getUser();
-	console.log(user);
+	console.log("# user : " + user!.username);
 
 	const tweets = await getTweets();
-	console.log(tweets.length);
+	console.log("# tweets : " + tweets.length);
 
 	const viewProfile = async () => {
 		"use server";
@@ -48,7 +52,7 @@ export default async function Home() {
 
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
-			<div className="text-3xl text-center pt-10">✨ Home ✨</div>
+			<div className="text-3xl text-center pt-[10vh]">✨ Home ✨</div>
 			<form action={viewProfile}>
 				<Button mode="primary" text="Go to Profile" />
 			</form>
@@ -56,11 +60,8 @@ export default async function Home() {
 			<hr className="-mt-10 -mb-5" />
 			<div className="flex flex-col gap-2">
 				{tweets.map((item) => (
-					<Link href={`/tweets/${item.id}`}>
-						<div
-							key={item.id}
-							className="border rounded-md p-3 bg-gray-800 flex justify-between"
-						>
+					<Link key={item.id} href={`/tweets/${item.id}`}>
+						<div className="border rounded-md p-3 bg-gray-800 flex justify-between">
 							<div className="flex flex-row gap-2">
 								<UserIcon className="size-8" />
 								{item.tweet}

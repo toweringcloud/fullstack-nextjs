@@ -21,6 +21,8 @@ async function getUser() {
 
 export default async function Profile() {
 	const user = await getUser();
+	console.log(user!.username);
+
 	const goHome = async () => {
 		"use server";
 		redirect("/");

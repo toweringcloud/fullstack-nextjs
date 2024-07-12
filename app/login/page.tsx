@@ -5,6 +5,7 @@ import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
+// import SocialLogin from "@/components/social-login";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { logIn } from "./actions";
@@ -40,6 +41,7 @@ export default function LogIn() {
 					</div>
 				) : null}
 			</form>
+			{/* <SocialLogin /> */}
 			<hr className="-mt-5 -mb-5" />
 			<Link href="/create-account">
 				<Button mode="secondary" text="Sign-up" />

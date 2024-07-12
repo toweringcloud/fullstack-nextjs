@@ -23,6 +23,13 @@ async function getTweet(id) {
 		where: {
 			id: parseInt(id),
 		},
+		include: {
+			user: {
+				select: {
+					username: true,
+				},
+			},
+		},
 	});
 	if (!tweet) return null;
 	return tweet;
@@ -30,10 +37,10 @@ async function getTweet(id) {
 
 export default async function Detail({ params }) {
 	const user = await getUser();
-	console.log(user);
+	console.log("# user : " + user!.username);
 
 	const item = await getTweet(params.id);
-	console.log(item);
+	console.log("# tweet : " + item!.tweet);
 
 	const goHome = async () => {
 		"use server";
@@ -46,10 +53,10 @@ export default async function Detail({ params }) {
 			<form action={goHome}>
 				<Button mode="primary" text="Go to Home" />
 			</form>
-			<h2>Tweet Info</h2>
+			<h2>Tweet Info ({item?.id})</h2>
 			<hr className="-mt-10 -mb-5" />
 			<div className="flex flex-col gap-2 text-gray-400">
-				<span>- 트윗 번호 : {item?.id}</span>
+				<span>- 트윗 오너 : {item?.user.username}</span>
 				<span>- 트윗 내용 : {item?.tweet}</span>
 				<span>
 					- 트윗 일시 : {item?.created_at.toLocaleTimeString()}
