@@ -42,7 +42,7 @@ export default async function Profile() {
 				</span>
 				<span>! Feel free to add your tweets. :::::</span>
 			</h1>
-			<form action={goHome}>
+			<form action={goHome} className="-mb-5">
 				<Button mode="primary" text="Go to Home" />
 			</form>
 			<form action={logOut}>

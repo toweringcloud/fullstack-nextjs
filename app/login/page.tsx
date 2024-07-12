@@ -42,7 +42,7 @@ export default function LogIn() {
 			</form>
 			<hr className="-mt-5 -mb-5" />
 			<Link href="/create-account">
-				<Button mode="secondary" text="Create account" />
+				<Button mode="secondary" text="Sign-up" />
 			</Link>
 		</div>
 	);
