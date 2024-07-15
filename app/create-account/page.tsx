@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useFormState } from "react-dom";
 
 import Button from "@/components/button";
-import ButtonSecondary from "@/components/button-secondary";
 import Input from "@/components/input";
+
 import { createAccount } from "./actions";
 
 export default function CreateAccount() {
@@ -51,7 +51,7 @@ export default function CreateAccount() {
 			</form>
 			<hr className="-mt-5 -mb-5" />
 			<Link href="/login">
-				<ButtonSecondary mode="secondary" text="Sign-in" />
+				<Button mode="secondary" text="Sign-in" />
 			</Link>
 		</div>
 	);

@@ -5,9 +5,10 @@ import { useFormState } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
-// import SocialLogin from "@/components/social-login";
 import Button from "@/components/button";
 import Input from "@/components/input";
+// import SocialLogin from "@/components/social-login";
+
 import { logIn } from "./actions";
 
 export default function LogIn() {
