@@ -8,12 +8,6 @@
 	}
 }
 
-@layer utilities {
-	.text-bigger-hello {
-		@apply text-3xl font-semibold;
-	}
-}
-
 @layer components {
 	.primary-btn {
 		@apply w-full bg-teal-500 text-white font-medium rounded-xl text-center hover:bg-teal-400 transition-colors;
@@ -23,5 +17,11 @@
 	}
 	.warning-btn {
 		@apply w-full bg-red-500 text-white font-medium rounded-xl text-center hover:bg-red-400 transition-colors;
+	}
+}
+
+@layer utilities {
+	.text-bigger-hello {
+		@apply text-3xl font-semibold;
 	}
 }

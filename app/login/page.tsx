@@ -45,7 +45,7 @@ export default function LogIn() {
 			{/* <SocialLogin /> */}
 			<hr className="-mt-5 -mb-5" />
 			<Link href="/create-account">
-				<Button mode="secondary" text="Sign-up" />
+				<Button mode="primary" text="Sign-up" />
 			</Link>
 		</div>
 	);

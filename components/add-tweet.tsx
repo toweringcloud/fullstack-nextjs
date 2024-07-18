@@ -8,9 +8,9 @@ import Input from "@/components/input";
 export default function AddTweet({ action }: any) {
 	const [state, dispatch] = useFormState(action, null);
 	return (
-		<form action={dispatch} className="p-5 flex flex-col gap-5">
+		<form action={dispatch} className="p-0 flex flex-col gap-5">
 			<Input
-				name="tweet"
+				name="payload"
 				required
 				placeholder="Add your tweet!"
 				type="text"

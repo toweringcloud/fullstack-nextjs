@@ -29,10 +29,15 @@ export async function getTweetCount() {
 
 export async function getTweets(count: number, page: number) {
 	const tweets = await db.tweet.findMany({
-		include: {
-			user: {
+		select: {
+			id: true,
+			payload: true,
+			views: true,
+			created_at: true,
+			_count: {
 				select: {
-					username: true,
+					comments: true,
+					likes: true,
 				},
 			},
 		},
@@ -47,13 +52,13 @@ export async function getTweets(count: number, page: number) {
 }
 
 const formSchema = z.object({
-	tweet: z.string({ required_error: "Tweet is required!" }),
+	payload: z.string({ required_error: "Tweet is required!" }),
 });
 
 export async function addTweet(prevState: any, formData: FormData) {
 	//-validate user input
 	const data = {
-		tweet: formData.get("tweet"),
+		payload: formData.get("payload"),
 	};
 	const result = await formSchema.spa(data);
 	if (!result.success) {
@@ -65,7 +70,7 @@ export async function addTweet(prevState: any, formData: FormData) {
 	if (session.id) {
 		await db.tweet.create({
 			data: {
-				tweet: result.data.tweet,
+				payload: result.data.payload,
 				user: {
 					connect: {
 						id: session.id,
@@ -78,8 +83,4 @@ export async function addTweet(prevState: any, formData: FormData) {
 		});
 		redirect("/");
 	}
-}
-
-export async function viewProfile() {
-	redirect("/profile");
 }
