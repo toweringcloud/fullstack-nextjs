@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { EyeIcon, HandThumbUpIcon, UserIcon } from "@heroicons/react/24/solid";
+import { notFound, redirect } from "next/navigation";
+import { unstable_cache as nextCache } from "next/cache";
+import { EyeIcon, UserIcon } from "@heroicons/react/24/solid";
 
 import Button from "@/components/button";
+import LikeButton from "@/components/button-like";
 import { db } from "@/libs/db";
 import getSession from "@/libs/session";
 import { formatToTimeAgo } from "@/libs/utils";
@@ -54,6 +54,11 @@ async function getTweet(id) {
 	}
 }
 
+const getCachedTweet = nextCache(getTweet, ["tweet-detail"], {
+	tags: ["tweet-detail"],
+	revalidate: 60,
+});
+
 async function getIsLiked(tweetId: number) {
 	const session = await getSession();
 	const like = await db.like.findUnique({
@@ -64,7 +69,28 @@ async function getIsLiked(tweetId: number) {
 			},
 		},
 	});
-	return Boolean(like);
+	return like == null ? false : true;
+}
+
+async function getLikeStatus(tweetId: number) {
+	const isLiked = await getIsLiked(tweetId);
+	const likeCount = await db.like.count({
+		where: {
+			tweetId,
+		},
+	});
+	console.log("# getLikeStatus: " + likeCount);
+	return {
+		likeCount,
+		isLiked,
+	};
+}
+
+function getCachedLikeStatus(tweetId: number) {
+	const cachedOperation = nextCache(getLikeStatus, ["tweet-like-status"], {
+		tags: [`like-status-${tweetId}`],
+	});
+	return cachedOperation(tweetId);
 }
 
 export default async function Detail({ params }) {
@@ -76,47 +102,22 @@ export default async function Detail({ params }) {
 		return notFound();
 	}
 
-	const item = await getTweet(id);
+	// const item = await getTweet(id);
+	const item = await getCachedTweet(id);
 	if (!item) {
 		return notFound();
 	}
-	console.log("# tweet : " + item!.payload);
-
-	const likeTweet = async () => {
-		"use server";
-		const session = await getSession();
-		try {
-			await db.like.create({
-				data: {
-					tweetId: id,
-					userId: session.id!,
-				},
-			});
-			revalidatePath(`/post/${id}`);
-		} catch (e) {}
-	};
-	const isLiked = await getIsLiked(id);
-
-	const dislikeTweet = async () => {
-		"use server";
-		try {
-			const session = await getSession();
-			await db.like.delete({
-				where: {
-					cid: {
-						tweetId: id,
-						userId: session.id!,
-					},
-				},
-			});
-			revalidatePath(`/post/${id}`);
-		} catch (e) {}
-	};
 
 	const goHome = async () => {
 		"use server";
 		redirect("/");
 	};
+
+	// const isLiked = await getIsLiked(id);
+	const { likeCount, isLiked } = await getLikeStatus(id);
+	// const { likeCount, isLiked } = await getCachedLikeStatus(id);
+	// ⨯ Error: Route /tweets/6 used "cookies" inside a function cached with "unstable_cache(...)". Accessing Dynamic data sources inside a cache scope is not supported. If you need this data inside a cached function use "cookies" outside of the cached function and pass the required dynamic data in as an argument. See more info here: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
+	console.log(likeCount, isLiked);
 
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
@@ -125,7 +126,7 @@ export default async function Detail({ params }) {
 				<Button mode="primary" text="Go to Home" />
 			</form>
 			<h2>Tweet Info ({item?.id})</h2>
-			<hr className="-mt-10 -mb-5" />
+			<hr className="-mt-9 -mb-5" />
 			<div className="flex flex-col gap-2 text-gray-400">
 				<span className="mb-2">{item?.payload}</span>
 				<div className="flex justify-between items-start *:flex *:gap-2 -mb-4">
@@ -142,14 +143,11 @@ export default async function Detail({ params }) {
 					<EyeIcon className="size-5" />
 					<span>조회 {item.views}</span>
 				</div>
-				<form action={isLiked ? dislikeTweet : likeTweet}>
-					<button
-						className={`flex items-center gap-2 text-neutral-400 text-sm border border-neutral-400 rounded-full p-2 hover:bg-neutral-800 transition-colors`}
-					>
-						<HandThumbUpIcon className="size-5" />
-						<span>공감하기 ({item._count.likes})</span>
-					</button>
-				</form>
+				<LikeButton
+					isLiked={isLiked}
+					likeCount={likeCount}
+					tweetId={id}
+				/>
 			</div>
 		</div>
 	);

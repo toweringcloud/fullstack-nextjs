@@ -12,7 +12,7 @@ export default function FormButton({ mode, text }: FormButtonProps) {
 	return (
 		<button
 			disabled={pending}
-			className={`${mode}-btn h-10 p-2 disabled:bg-neutral-400  disabled:text-neutral-300 disabled:cursor-not-allowed`}
+			className={`${mode}-btn h-10 p-2 disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed`}
 		>
 			{pending ? "Loading..." : text}
 		</button>

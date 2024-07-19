@@ -12,7 +12,7 @@ import { getUser, getTweetCount, getTweets, addTweet } from "./actions";
 
 export default async function Home() {
 	const user = await getUser();
-	console.log("# user : " + user!.username);
+	console.log("# users : " + user!.username);
 
 	const tweetCount = await getTweetCount();
 	console.log("# tweets : " + tweetCount);
@@ -28,20 +28,22 @@ export default async function Home() {
 				<Button mode="primary" text="Go to Profile" />
 			</Link>
 			<AddTweet action={addTweet} />
-			<h2>Latest Tweets Top 5</h2>
-			<hr className="-mt-10 -mb-5" />
+			<h2>Latest 5 Tweets</h2>
+			<hr className="-mt-9 -mb-5" />
 			<div className="flex flex-col gap-3">
 				{tweets.map((item) => (
-					<Link key={item.id} href={`/tweets/${item.id}`}>
-						<div className="border rounded-md p-3 bg-gray-800 text-xs flex justify-between items-center">
-							<div className="flex flex-row gap-2 w-[80%]">
-								{item.payload}
+					<div key={item.id}>
+						<Link href={`/tweets/${item.id}`}>
+							<div className="text-xs border rounded-md p-3 bg-gray-800 hover:bg-gray-700 flex justify-between items-center">
+								<div className="flex gap-2 w-[80%]">
+									{item.payload}
+								</div>
+								<div className="text-gray-400">
+									{item.created_at.toLocaleTimeString()}
+								</div>
 							</div>
-							<div className="text-gray-400">
-								{item.created_at.toLocaleTimeString()}
-							</div>
-						</div>
-						<div className="text-xs flex gap-4 items-center *:flex *:gap-1 *:items-center">
+						</Link>
+						<div className="text-xs text-gray-300 flex gap-4 items-center *:flex *:gap-1 *:items-center">
 							<span>
 								<EyeIcon className="size-5" />
 								{item.views}
@@ -55,13 +57,9 @@ export default async function Home() {
 								{item._count.comments}
 							</span>
 						</div>
-					</Link>
+					</div>
 				))}
 			</div>
-			{/* <div className="flex justify-around">
-				<Link href="/">PREV</Link>
-				<Link href="/">NEXT</Link>
-			</div> */}
 		</div>
 	);
 }
