@@ -110,18 +110,29 @@ export async function dislikeTweet(tweetId: number) {
 	} catch (e) {}
 }
 
-export async function getCommentCount() {
-	const commentCount = await db.comment.count({});
+export async function getCommentCount(tweetId: number) {
+	const commentCount = await db.comment.count({
+		where: {
+			tweetId,
+		},
+	});
 	if (!commentCount) return 0;
 	return commentCount;
 }
 
-export async function getComments(count: number, page: number) {
+export async function getComments(
+	count: number,
+	page: number,
+	tweetId: number
+) {
 	const comments = await db.comment.findMany({
 		select: {
 			id: true,
 			payload: true,
 			created_at: true,
+		},
+		where: {
+			tweetId,
 		},
 		skip: count * page,
 		take: count,
@@ -133,23 +144,22 @@ export async function getComments(count: number, page: number) {
 	return comments;
 }
 
-const formSchema = z.object({
+const formSchemaAdd = z.object({
 	payload: z.string({ required_error: "Comment is required!" }),
+	tweetId: z.string(),
 });
 
 export async function addComment(prevState: any, formData: FormData) {
-	//-validate user input
 	const data = {
 		payload: formData.get("payload"),
 		tweetId: formData.get("tweetId") as string,
 	};
-	console.log(JSON.stringify(formData));
-	const result = await formSchema.spa(data);
+	console.log("# addComment: " + JSON.stringify(formData));
+	const result = await formSchemaAdd.spa(data);
 	if (!result.success) {
 		return result.error.flatten();
 	}
 
-	//-add user's comment
 	const session = await getSession();
 	if (session.id && data.tweetId) {
 		await db.comment.create({
@@ -172,4 +182,28 @@ export async function addComment(prevState: any, formData: FormData) {
 		});
 		redirect(`/tweets/${data.tweetId}`);
 	}
+}
+
+const formSchemaRemove = z.object({
+	tweetId: z.string(),
+	commentId: z.string(),
+});
+
+export async function removeComment(prevState: any, formData: FormData) {
+	const data = {
+		tweetId: formData.get("tweetId") as string,
+		commentId: formData.get("commentId") as string,
+	};
+	console.log("# removeComment: " + JSON.stringify(formData));
+	const result = await formSchemaRemove.spa(data);
+	if (!result.success) {
+		return result.error.flatten();
+	}
+
+	await db.comment.delete({
+		where: {
+			id: parseInt(data.commentId),
+		},
+	});
+	redirect(`/tweets/${data.tweetId}`);
 }

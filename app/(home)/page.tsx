@@ -3,10 +3,12 @@ import { EyeIcon } from "@heroicons/react/24/solid";
 import {
 	ChatBubbleBottomCenterIcon,
 	HandThumbUpIcon,
+	PencilSquareIcon,
+	TrashIcon,
 } from "@heroicons/react/24/outline";
 
-import AddTweet from "@/components/add-tweet";
 import Button from "@/components/button";
+import TweetAdd from "@/components/tweet-add";
 
 import { getUser, getTweetCount, getTweets, addTweet } from "./actions";
 
@@ -27,35 +29,44 @@ export default async function Home() {
 			<Link href="/profile">
 				<Button mode="primary" text="Go to Profile" />
 			</Link>
-			<AddTweet action={addTweet} />
-			<h2>Latest 5 Tweets</h2>
+			<TweetAdd action={addTweet} />
+			<div className="flex justify-between gap-5">
+				<h2>Latest 5 Tweets</h2>
+				<span className="text-gray-400">Total {tweetCount}</span>
+			</div>
 			<hr className="-mt-9 -mb-5" />
 			<div className="flex flex-col gap-3">
 				{tweets.map((item) => (
 					<div key={item.id}>
 						<Link href={`/tweets/${item.id}`}>
 							<div className="text-xs border rounded-md p-3 bg-gray-800 hover:bg-gray-700 flex justify-between items-center">
-								<div className="flex gap-2 w-[80%]">
+								<div className="flex w-[80%]">
 									{item.payload}
 								</div>
-								<div className="text-gray-400">
+								<div className="text-gray-400 pl-1">
 									{item.created_at.toLocaleTimeString()}
 								</div>
 							</div>
 						</Link>
-						<div className="text-xs text-gray-300 flex gap-4 items-center *:flex *:gap-1 *:items-center">
-							<span>
-								<EyeIcon className="size-5" />
-								{item.views}
-							</span>
-							<span>
-								<HandThumbUpIcon className="size-4" />
-								{item._count.likes}
-							</span>
-							<span>
-								<ChatBubbleBottomCenterIcon className="size-4" />
-								{item._count.comments}
-							</span>
+						<div className="text-xs text-gray-300 mt-1 flex justify-between">
+							<div className="flex gap-4 items-center *:flex *:gap-1 *:items-center">
+								<span>
+									<EyeIcon className="size-4" />
+									{item.views}
+								</span>
+								<span>
+									<HandThumbUpIcon className="size-4" />
+									{item._count.likes}
+								</span>
+								<span>
+									<ChatBubbleBottomCenterIcon className="size-4" />
+									{item._count.comments}
+								</span>
+							</div>
+							<div className="flex gap-1 items-center *:flex *:gap-1 *:items-center">
+								<PencilSquareIcon className="size-4" />
+								<TrashIcon className="size-4 text-orange-500 " />
+							</div>
 						</div>
 					</div>
 				))}

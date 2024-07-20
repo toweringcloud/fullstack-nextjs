@@ -6,7 +6,7 @@ import { useFormState } from "react-dom";
 import Button from "@/components/button";
 import Input from "@/components/input";
 
-export default function AddComment({ action, tweetId }: any) {
+export default function CommentAdd({ action, tweetId }: any) {
 	const formRef = useRef<HTMLFormElement>(null);
 	const [state, dispatch] = useFormState(action, null);
 

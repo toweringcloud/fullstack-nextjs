@@ -52,7 +52,7 @@ export default function LikeButton({
 			{state.isLiked ? (
 				<span> {state.likeCount}</span>
 			) : (
-				<span>공감하기 ({state.likeCount})</span>
+				<span>Like ({state.likeCount})</span>
 			)}
 		</button>
 	);

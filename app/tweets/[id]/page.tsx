@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { unstable_cache as nextCache } from "next/cache";
 import { EyeIcon, UserIcon } from "@heroicons/react/24/solid";
 
-import AddComment from "@/components/add-comment";
 import Button from "@/components/button";
+import CommentAdd from "@/components/comment-add";
+import CommentRemove from "@/components/comment-remove";
 import LikeButton from "@/components/button-like";
 import { formatToTimeAgo } from "@/libs/utils";
 
@@ -15,6 +16,7 @@ import {
 	getCommentCount,
 	getComments,
 	addComment,
+	removeComment,
 } from "./actions";
 
 const getCachedTweet = nextCache(getTweet, ["tweet-detail"], {
@@ -38,9 +40,9 @@ export default async function Detail({ params }) {
 		return notFound();
 	}
 
-	// const item = await getTweet(id);
-	const item: any = await getCachedTweet(id);
-	if (!item) {
+	// const tweet = await getTweet(id);
+	const tweet: any = await getCachedTweet(id);
+	if (!tweet) {
 		return notFound();
 	}
 
@@ -48,12 +50,12 @@ export default async function Detail({ params }) {
 	// const { likeCount, isLiked } = await getCachedLikeStatus(id);
 	// ⨯ Error: Route /tweets/6 used "cookies" inside a function cached with "unstable_cache(...)". Accessing Dynamic data sources inside a cache scope is not supported. If you need this data inside a cached function use "cookies" outside of the cached function and pass the required dynamic data in as an argument. See more info here: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
 
-	const commentCount = await getCommentCount();
+	const commentCount = await getCommentCount(id);
 	console.log("# comments : " + commentCount);
 
 	let currentPage = 0;
-	const pageCount = commentCount / 5 + 1;
-	const comments = await getComments(5, currentPage);
+	const pageCount = commentCount / 3 + 1;
+	const comments = await getComments(3, currentPage, id);
 
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
@@ -61,23 +63,23 @@ export default async function Detail({ params }) {
 			<Link href="/">
 				<Button mode="primary" text="Go to Home" />
 			</Link>
-			<h2>Tweet Info ({item?.id})</h2>
+			<h2>Tweet Info ({tweet?.id})</h2>
 			<hr className="-mt-9 -mb-5" />
 			<div className="flex flex-col gap-2 text-gray-400">
-				<span className="mb-2">{item?.payload}</span>
+				<span className="mb-2">{tweet?.payload}</span>
 				<div className="flex justify-between items-start *:flex *:gap-2 -mb-4">
 					<span className="text-pretty">
 						<UserIcon className="size-5" />
-						{item?.user.username}
+						{tweet?.user.username}
 					</span>
-					<span>{formatToTimeAgo(item?.created_at.toString())}</span>
+					<span>{formatToTimeAgo(tweet?.created_at.toString())}</span>
 				</div>
 			</div>
 			<hr className="-mt-5 -mb-8" />
 			<div className="flex justify-between items-start">
 				<div className="flex items-center gap-2 text-neutral-400 text-sm">
 					<EyeIcon className="size-5" />
-					<span>조회 {item.views}</span>
+					<span>View {tweet.views}</span>
 				</div>
 				<LikeButton
 					isLiked={isLiked}
@@ -85,18 +87,28 @@ export default async function Detail({ params }) {
 					tweetId={id}
 				/>
 			</div>
-			<AddComment action={addComment} tweetId={item?.id} />
-			<h2>Latest 3 Comments</h2>
+			<CommentAdd action={addComment} tweetId={tweet?.id} />
+			<div className="flex justify-between gap-5">
+				<h2>Latest 3 Comments</h2>
+				<span className="text-gray-400">Total {commentCount}</span>
+			</div>
 			<hr className="-mt-9 -mb-5" />
 			<div className="flex flex-col gap-3">
-				{comments.map((item) => (
-					<div key={item.id}>
+				{comments.map((comment) => (
+					<div key={comment.id}>
 						<div className="text-xs border rounded-md p-3 bg-gray-800 hover:bg-gray-700 flex justify-between items-center">
-							<div className="flex gap-2 w-[80%]">
-								{item.payload}
+							<div className="flex gap-2 w-[75%]">
+								{comment.payload}
 							</div>
-							<div className="text-gray-400">
-								{item.created_at.toLocaleTimeString()}
+							<div className=" text-gray-400 pl-1">
+								{comment.created_at.toLocaleTimeString()}
+							</div>
+							<div className="flex items-center">
+								<CommentRemove
+									action={removeComment}
+									tweetId={tweet?.id}
+									commentId={comment.id}
+								/>
 							</div>
 						</div>
 					</div>
