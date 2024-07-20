@@ -2,12 +2,12 @@
 
 import { useFormStatus } from "react-dom";
 
-interface FormButtonProps {
+interface ButtonProps {
 	mode: string;
 	text: string;
 }
 
-export default function FormButton({ mode, text }: FormButtonProps) {
+export default function Button({ mode, text }: ButtonProps) {
 	const { pending } = useFormStatus();
 	return (
 		<button
