@@ -13,7 +13,8 @@
 	],
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build",
+		"db:schema": "prisma generate --schema ./db/schema.prisma",
+		"build": "npm run db:schema && prisma migrate deploy && next build",
 		"start": "next start"
 	},
 	"dependencies": {

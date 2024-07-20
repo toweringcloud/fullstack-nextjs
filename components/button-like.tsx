@@ -12,7 +12,7 @@ interface LikeButtonProps {
 	tweetId: number;
 }
 
-export default function LikeButton({
+export default function ButtonLike({
 	isLiked,
 	likeCount,
 	tweetId,
@@ -41,7 +41,7 @@ export default function LikeButton({
 			className={`flex items-center gap-2 text-neutral-400 text-sm rounded-full transition-colors ${
 				state.isLiked
 					? "text-white"
-					: "hover:bg-orange-300 hover:text-black hover:p-1"
+					: "hover:bg-teal-300 hover:text-black hover:p-1"
 			}`}
 		>
 			{state.isLiked ? (

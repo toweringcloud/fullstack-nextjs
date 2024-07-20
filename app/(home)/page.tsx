@@ -64,7 +64,7 @@ export default async function Home() {
 								</span>
 							</div>
 							<div className="flex gap-1 items-center *:flex *:gap-1 *:items-center">
-								<PencilSquareIcon className="size-4" />
+								<PencilSquareIcon className="size-4 text-teal-500" />
 								<TrashIcon className="size-4 text-orange-500 " />
 							</div>
 						</div>

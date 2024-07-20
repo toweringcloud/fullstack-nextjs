@@ -4,9 +4,10 @@ import { unstable_cache as nextCache } from "next/cache";
 import { EyeIcon, UserIcon } from "@heroicons/react/24/solid";
 
 import Button from "@/components/button";
+import ButtonLike from "@/components/button-like";
 import CommentAdd from "@/components/comment-add";
 import CommentRemove from "@/components/comment-remove";
-import LikeButton from "@/components/button-like";
+
 import { formatToTimeAgo } from "@/libs/utils";
 
 import {
@@ -81,7 +82,7 @@ export default async function Detail({ params }) {
 					<EyeIcon className="size-5" />
 					<span>View {tweet.views}</span>
 				</div>
-				<LikeButton
+				<ButtonLike
 					isLiked={isLiked}
 					likeCount={likeCount}
 					tweetId={id}
