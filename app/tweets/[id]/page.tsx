@@ -59,61 +59,65 @@ export default async function Detail({ params }) {
 	const comments = await getComments(3, currentPage, id);
 
 	return (
-		<div className="flex flex-col gap-10 py-8 px-6">
-			<div className="text-3xl text-center pt-[5vh]">✨ Detail ✨</div>
-			<Link href="/">
-				<Button mode="primary" text="Go to Home" />
-			</Link>
-			<h2>Tweet Info ({tweet?.id})</h2>
-			<hr className="-mt-9 -mb-5" />
-			<div className="flex flex-col gap-2 text-gray-400">
-				<span className="mb-2">{tweet?.payload}</span>
-				<div className="flex justify-between items-start *:flex *:gap-2 -mb-4">
-					<span className="text-pretty">
-						<UserIcon className="size-5" />
-						{tweet?.user.username}
-					</span>
-					<span>{formatToTimeAgo(tweet?.created_at.toString())}</span>
+		<div className="h-screen flex justify-center items-center">
+			<div className="flex flex-col gap-10 py-8 px-6 mx-[15%] min-w-[450px]">
+				<div className="text-3xl text-center">✨ Detail ✨</div>
+				<Link href="/">
+					<Button mode="primary" text="Go to Home" />
+				</Link>
+				<h2>Tweet Info ({tweet?.id})</h2>
+				<hr className="-mt-9 -mb-5" />
+				<div className="flex flex-col gap-2 text-gray-400">
+					<span className="mb-2">{tweet?.payload}</span>
+					<div className="flex justify-between items-start *:flex *:gap-2 -mb-4">
+						<span className="text-pretty">
+							<UserIcon className="size-5" />
+							{tweet?.user.username}
+						</span>
+						<span>
+							{formatToTimeAgo(tweet?.created_at.toString())}
+						</span>
+					</div>
 				</div>
-			</div>
-			<hr className="-mt-5 -mb-8" />
-			<div className="flex justify-between items-start">
-				<div className="flex items-center gap-2 text-neutral-400 text-sm">
-					<EyeIcon className="size-5" />
-					<span>View {tweet.views}</span>
+				<hr className="-mt-5 -mb-8" />
+				<div className="flex justify-between items-start">
+					<div className="flex items-center gap-2 text-neutral-400 text-sm">
+						<EyeIcon className="size-5" />
+						<span>View {tweet.views}</span>
+					</div>
+					<ButtonLike
+						isLiked={isLiked}
+						likeCount={likeCount}
+						tweetId={id}
+					/>
 				</div>
-				<ButtonLike
-					isLiked={isLiked}
-					likeCount={likeCount}
-					tweetId={id}
-				/>
-			</div>
-			<CommentAdd action={addComment} tweetId={tweet?.id} />
-			<div className="flex justify-between gap-5">
-				<h2>Latest 3 Comments</h2>
-				<span className="text-gray-400">Total {commentCount}</span>
-			</div>
-			<hr className="-mt-9 -mb-5" />
-			<div className="flex flex-col gap-3">
-				{comments.map((comment) => (
-					<div key={comment.id}>
-						<div className="text-xs border rounded-md p-3 bg-gray-800 hover:bg-gray-700 flex justify-between items-center">
-							<div className="flex gap-2 w-[75%]">
-								{comment.payload}
-							</div>
-							<div className=" text-gray-400 pl-1">
-								{comment.created_at.toLocaleTimeString()}
-							</div>
-							<div className="flex items-center">
-								<CommentRemove
-									action={removeComment}
-									tweetId={tweet?.id}
-									commentId={comment.id}
-								/>
+				<CommentAdd action={addComment} tweetId={tweet?.id} />
+				<div className="flex justify-between gap-5">
+					<h2>Latest 3 Comments</h2>
+					<span className="text-gray-400">Total {commentCount}</span>
+				</div>
+				<hr className="-mt-9 -mb-5" />
+				<div className="flex flex-col gap-3">
+					{comments.map((comment) => (
+						<div key={comment.id}>
+							<div className="text-xs border rounded-md p-3 bg-gray-800 hover:bg-gray-700 flex justify-between items-center">
+								<div className="flex gap-2 w-[75%]">
+									{comment.payload}
+								</div>
+								<div className=" text-gray-400 pl-1">
+									{comment.created_at.toLocaleTimeString()}
+								</div>
+								<div className="flex items-center">
+									<CommentRemove
+										action={removeComment}
+										tweetId={tweet?.id}
+										commentId={comment.id}
+									/>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					))}
+				</div>
 			</div>
 		</div>
 	);
